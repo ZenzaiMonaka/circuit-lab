@@ -191,10 +191,12 @@ function Opamp({ part }: { part: OpampPart }) {
   const [x, y] = part.at;
   return (
     <g transform={`translate(${x} ${y})`}>
-      <polygon points="0,-40 0,40 80,0" />
-      {line(6, -20, 14, -20)}
-      {line(6, 20, 14, 20)}
-      {line(10, 16, 10, 24)}
+      <g transform={part.flip ? "scale(1 -1)" : undefined}>
+        <polygon points="0,-40 0,40 80,0" />
+        {line(6, -20, 14, -20)}
+        {line(6, 20, 14, 20)}
+        {line(10, 16, 10, 24)}
+      </g>
       <text x={34} y={4} textAnchor="middle" className="sch-text sch-name">{part.name}</text>
       {part.note && <text x={40} y={58} textAnchor="middle" className="sch-text">{part.note}</text>}
     </g>

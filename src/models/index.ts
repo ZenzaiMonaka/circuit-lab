@@ -30,11 +30,19 @@ export const MODEL_LIBRARY: Record<ModelName, string> = {
 
   // 汎用オペアンプ: 直流利得 100dB、利得帯域幅積 1MHz、出力は電源電圧の 1.5V 内側まで振れる。
   // 出力の制限は、小さな信号の精度を保つため高次の滑らかな制限関数で作っている。
+  // 内部のノード n1(利得段の出力)は、ダイオードで「制限値の 3 倍」までに抑える。
+  // 抑えないと、出力が飽和している間に n1 が数万 V まで積み上がり(ワインドアップ)、
+  // 入力が逆転しても、出力がなかなか戻らなくなる(コンパレータとして使えない)。
   OPAMP: `.subckt OPAMP inp inn out vp vn
+.model DCL D(Is=1e-14)
 Rin inp inn 10Meg
 G1 0 n1 inp inn 1m
 R1 n1 0 100Meg
 C1 n1 0 159.155p
+Bhi nhi 0 V=3*((V(vp)-V(vn))/2-1.5)
+Blo nlo 0 V=-3*((V(vp)-V(vn))/2-1.5)
+Dhi n1 nhi DCL
+Dlo nlo n1 DCL
 B1 nlim 0 V=(V(vp)+V(vn))/2 + V(n1)/(1+(abs(V(n1))/((V(vp)-V(vn))/2-1.5))**4)**0.25
 Ro nlim out 75
 .ends OPAMP`,

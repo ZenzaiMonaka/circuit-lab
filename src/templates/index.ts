@@ -5,14 +5,23 @@ import { rcHighpass } from "./filter/rc-highpass";
 import { rcLowpass } from "./filter/rc-lowpass";
 import { rlcParallelResonance } from "./filter/rlc-parallel-resonance";
 import { rlcSeriesResonance } from "./filter/rlc-series-resonance";
+import { differenceAmp } from "./opamp/difference-amp";
+import { integrator } from "./opamp/integrator";
 import { invertingAmp } from "./opamp/inverting-amp";
+import { nonInvertingAmp } from "./opamp/non-inverting-amp";
+import { sallenKeyLowpass } from "./opamp/sallen-key-lowpass";
+import { schmittTrigger } from "./opamp/schmitt-trigger";
+import { summingAmp } from "./opamp/summing-amp";
 import { bridgeRectifier } from "./power-supply/bridge-rectifier";
 import { clipperClamper } from "./power-supply/clipper-clamper";
 import { halfWaveRectifier } from "./power-supply/half-wave-rectifier";
 import { seriesRegulator } from "./power-supply/series-regulator";
 import { voltageDoubler } from "./power-supply/voltage-doubler";
 import { zenerRegulator } from "./power-supply/zener-regulator";
+import { boostConverter } from "./power-electronics/boost-converter";
+import { buckBoostConverter } from "./power-electronics/buck-boost-converter";
 import { buckConverter } from "./power-electronics/buck-converter";
+import { threePhaseInverter } from "./power-electronics/three-phase-inverter";
 import { rcCharge } from "./transient/rc-charge";
 import { rlCircuit } from "./transient/rl-circuit";
 import { rlcStep } from "./transient/rlc-step";
@@ -51,7 +60,16 @@ export const TEMPLATES: Template[] = [
   currentMirror,
   pushPull,
   invertingAmp,
+  nonInvertingAmp,
+  summingAmp,
+  differenceAmp,
+  integrator,
+  sallenKeyLowpass,
+  schmittTrigger,
   buckConverter,
+  boostConverter,
+  buckBoostConverter,
+  threePhaseInverter,
 ];
 
 export function findTemplate(id: string): Template | undefined {

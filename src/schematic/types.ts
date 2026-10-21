@@ -20,8 +20,11 @@ export interface GroundPart { kind: "GND"; at: Point }
  * mirror が true のときは左右を反転する(端子の x が -40 になる)
  */
 export interface TransistorPart { kind: "NPN" | "PNP" | "NMOS"; at: Point; name: string; mirror?: boolean }
-/** オペアンプ。at は左端の中央。反転入力は (0,-20)、非反転入力は (0,+20)、出力は (+80,0) */
-export interface OpampPart { kind: "OPAMP"; at: Point; name: string; note?: string }
+/**
+ * オペアンプ。at は左端の中央。反転入力は (0,-20)、非反転入力は (0,+20)、出力は (+80,0)。
+ * flip が true のときは上下を反転する(非反転入力が上、反転入力が下になる)
+ */
+export interface OpampPart { kind: "OPAMP"; at: Point; name: string; note?: string; flip?: boolean }
 export interface TextPart { kind: "TEXT"; at: Point; text: string; anchor?: "start" | "middle" | "end" }
 
 export type SchematicPart = TwoTerminalPart | GroundPart | TransistorPart | OpampPart | TextPart;

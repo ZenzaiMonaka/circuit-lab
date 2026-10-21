@@ -13,6 +13,8 @@ describe("全テンプレートの共通チェック", () => {
       it("初期値が範囲内で、解説文がある", () => {
         expect(validateValues(template, defaultValues(template))).toEqual({});
         expect(template.explanation.length).toBeGreaterThan(100);
+        // 解説文の数式が、制御文字(改ページ文字など)に化けていない
+        expect(template.explanation).not.toMatch(/[\x00-\x08\x0b\x0c\x0e-\x1f]/);
       });
 
       it("すべての解析でネットリストが組み立てられ、数値以外が混ざらない", () => {
