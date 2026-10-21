@@ -26,3 +26,6 @@ coverage/
 
 # --- Netlify（公開する場合） ---
 .netlify/
+
+# --- PWA(開発モード用の生成物) ---
+dev-dist/

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Explanation } from "./components/Explanation";
 import { ParamPanel } from "./components/ParamPanel";
+import { PwaNotice } from "./components/PwaNotice";
 import { ResultView } from "./components/ResultView";
 import { TemplateList } from "./components/TemplateList";
 import { defaultValues, validateValues } from "./engine/netlist";
@@ -120,6 +121,8 @@ export function App() {
           </section>
         </main>
       </div>
+
+      <PwaNotice />
 
       <footer className="app-footer">
         <p>

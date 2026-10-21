@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#1b2433"/>
+  <!-- 基準線(グラウンド) -->
+  <line x1="56" y1="256" x2="456" y2="256" stroke="#e6e9f0" stroke-width="8" stroke-dasharray="4 20" stroke-linecap="round" opacity="0.55"/>
+  <!-- 正弦波(交流波形) -->
+  <path d="M56 256 C 96 112, 160 112, 206 256 S 316 400, 356 256 S 416 112, 456 256" fill="none" stroke="#6ea2ff" stroke-width="28" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="56" cy="256" r="18" fill="#e6e9f0"/>
+  <circle cx="456" cy="256" r="18" fill="#e6e9f0"/>
+</svg>

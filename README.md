@@ -11,6 +11,13 @@
 
 回路は全 34 種(要件のテンプレートをすべて実装済み): 基本 3 種、過渡応答 3 種、フィルタ・共振 4 種、電源 6 種、トランジスタ 7 種、オペアンプ 7 種、パワーエレクトロニクス 4 種
 
+## アプリとして使う(PWA)
+
+公開したページを開くと、ブラウザの「インストール」(PC の Chrome・Edge はアドレスバーのアイコン、
+iPhone の Safari は共有ボタンの「ホーム画面に追加」)で、アプリとして起動できる。
+最初に開いたときに、画面と計算エンジン(約 20MB)を端末に保存するので、**2 回目からはオフラインでも使える**。
+新しいバージョンを公開すると、画面の下に「新しいバージョンがあります」と出るので、「更新」を押す。
+
 ## 開発
 
 Node.js(LTS)が必要。
@@ -20,6 +27,8 @@ npm install          # 依存の取得
 npm run dev          # 開発サーバー(http://localhost:5173)
 npm test             # テスト(ngspice を実際に動かして理論値と比べるテストを含む)
 npm run build        # 公開用のビルド(dist/)
+npm run preview      # ビルドしたものの確認(http://localhost:4173/circuit-lab/。PWA はここで確認する)
+npm run generate:icons  # public/icon.svg から、PWA のアイコン(PNG・ICO)を作り直す
 npm run verify:engine  # 計算エンジンの動作・速度の確認(Node 上)
 ```
 
