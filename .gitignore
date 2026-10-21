@@ -1,0 +1,28 @@
+# --- 秘密情報（最重要。絶対に git に入れない） ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets/
+
+# --- データ・ログ（個人情報が入りうる） ---
+data/
+logs/
+*.log
+
+# --- OS・エディタの自動生成ファイル ---
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+
+# --- Node.js / Vite ---
+node_modules/
+dist/
+.vite/
+coverage/
+
+# --- Netlify（公開する場合） ---
+.netlify/
