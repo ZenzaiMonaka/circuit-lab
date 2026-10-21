@@ -43,12 +43,13 @@ npm run verify:engine  # 計算エンジンの動作・速度の確認(Node 上)
 ```
 circuit-lab/
 ├─ README.md   この説明書
-├─ CLAUDE.md   Claude 用のプロジェクトメモ
+├─ LICENSE     ライセンス(MIT)
 ├─ .gitignore  git に入れないファイルの指定
+├─ .github/    GitHub Pages への自動公開の設定(workflows/deploy.yml)
 ├─ src/        画面とプログラム本体（components/ 画面部品、engine/ 計算、models/ 部品モデル、schematic/ 回路図、templates/ 回路）
-├─ public/     そのまま公開する静的ファイル（画像・アイコンなど）
+├─ public/     そのまま公開する静的ファイル（アイコンなど）
 ├─ tests/      テスト
-└─ docs/       要件メモ・設計メモ（公開されない）
+└─ docs/       要件メモ・設計メモ（公開サイトには含まれない）
 ```
 
 ## 技術
