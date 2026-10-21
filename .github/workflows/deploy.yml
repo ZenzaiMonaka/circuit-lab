@@ -1,0 +1,56 @@
+# main に push すると、テストとビルドをして、GitHub Pages に公開する。
+# 公開先: https://<ユーザー名>.github.io/circuit-lab/ (サブパス /circuit-lab/ は vite.config.ts の base と合わせてある)
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  # 手動でも実行できる(Actions タブの「Run workflow」)
+  workflow_dispatch:
+
+# 必要最小限の権限だけ与える
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 公開が重ならないよう、1 つずつ順番に実行する(実行中の公開は途中で止めない)
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: 依存パッケージを入れる(ロックファイルのとおりに)
+        run: npm ci
+
+      - name: テスト(ngspice を実際に動かして理論値と比べるテストを含む)
+        run: npm test
+
+      - name: ビルド(型チェックを含む)
+        run: npm run build
+
+      - name: 公開するファイル(dist/)をまとめる
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: GitHub Pages に公開する
+        id: deployment
+        uses: actions/deploy-pages@v5
