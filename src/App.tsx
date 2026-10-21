@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Explanation } from "./components/Explanation";
 import { ParamPanel } from "./components/ParamPanel";
 import { PwaNotice } from "./components/PwaNotice";
@@ -17,14 +17,20 @@ export function App() {
 
   // 回路ごとの部品値。別の回路に切り替えて戻っても、変更した値を覚えておく
   const [valuesById, setValuesById] = useState<Record<string, ParamValues>>({});
-  const values = valuesById[template.id] ?? defaultValues(template);
-  const errors = validateValues(template, values);
+  // useMemo で、値を変えない限り同じオブジェクトを返す。毎回作り直すと、
+  // 「値が変わった」と見なされて、何もしなくても計算が繰り返されてしまう(useSimulation.ts 参照)
+  const values = useMemo(() => valuesById[template.id] ?? defaultValues(template), [valuesById, template]);
+  const errors = useMemo(() => validateValues(template, values), [template, values]);
 
   const [selectedKind, setSelectedKind] = useState<AnalysisKind | null>(null);
   const analysis = template.analyses.find((a) => a.kind === selectedKind) ?? template.analyses[0];
 
   const [menuOpen, setMenuOpen] = useState(false);
-  const { state, visibleData, stale, engineLoading, run, hasErrors } = useSimulation(template, analysis, values);
+  const { state, visibleData, stale, engineLoading, elapsedSec, run, cancel, hasErrors } = useSimulation(
+    template,
+    analysis,
+    values,
+  );
 
   const setValue = (key: string, value: number) =>
     setValuesById((prev) => ({ ...prev, [template.id]: { ...(prev[template.id] ?? defaultValues(template)), [key]: value } }));
@@ -95,7 +101,17 @@ export function App() {
 
             <div className="status" role="status">
               {engineLoading && <p>計算エンジンを読み込み中です(初回のみ時間がかかります)…</p>}
-              {!engineLoading && state.status === "running" && <p>計算中…</p>}
+              {!engineLoading && state.status === "running" && (
+                <p>
+                  計算中…{elapsedSec > 0 && ` ${elapsedSec} 秒`}
+                  {elapsedSec >= 2 && (
+                    <>
+                      {" "}
+                      <button type="button" className="link-button" onClick={cancel}>中止</button>
+                    </>
+                  )}
+                </p>
+              )}
               {hasErrors && <p className="error">部品値に誤りがあります。赤字の指示に従って直してください。</p>}
               {state.status === "error" && (
                 <p className="error">

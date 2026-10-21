@@ -39,11 +39,23 @@ export interface OpData {
 
 export type AnalysisData = TranData | AcData | OpData;
 
+/**
+ * 結果から、名前で信号(数値の列)を取り出す関数。
+ * 取り出した列は覚えておく。理由: 回路の定義の中には、信号の差を求めるために、
+ * 点ごとに get("v(u)")[i] のように呼ぶ式がある。毎回、列を作り直すと、点の数の 2 乗の時間がかかり、
+ * 点が多い条件(数万〜十数万点)で、画面が十数秒固まってしまう。
+ */
 function realSignals(result: ResultType): SignalGetter {
+  const cache = new Map<string, number[]>();
   return (name) => {
-    const column = result.data.find((d) => d.name === name.toLowerCase());
+    const key = name.toLowerCase();
+    const cached = cache.get(key);
+    if (cached) return cached;
+    const column = result.data.find((d) => d.name === key);
     if (!column) throw new Error(`信号 ${name} が結果にありません`);
-    return column.values.map((v) => (typeof v === "number" ? v : v.real));
+    const values = column.values.map((v) => (typeof v === "number" ? v : v.real));
+    cache.set(key, values);
+    return values;
   };
 }
 

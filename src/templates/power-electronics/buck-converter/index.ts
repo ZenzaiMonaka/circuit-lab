@@ -10,7 +10,8 @@ export const buckConverter: Template = {
     { key: "Vin", label: "入力電圧 Vin", unit: "V", default: 12, min: 3, max: 100, scale: "log" },
     { key: "duty", label: "デューティ比 D", unit: "%", default: 50, min: 5, max: 95, scale: "linear" },
     { key: "fsw", label: "スイッチング周波数 fsw", unit: "Hz", default: 100e3, min: 10e3, max: 500e3, scale: "log" },
-    { key: "L1", label: "インダクタ L", unit: "H", default: 100e-6, min: 1e-6, max: 10e-3, scale: "log" },
+    // 最小は 10µH。これより小さいと、インダクタとダイオードの容量の振動で、計算の刻みが極端に細かくなる(1µH で約 88 万点・8 秒)
+    { key: "L1", label: "インダクタ L", unit: "H", default: 100e-6, min: 10e-6, max: 10e-3, scale: "log" },
     { key: "C1", label: "出力コンデンサ C", unit: "F", default: 47e-6, min: 1e-6, max: 1e-3, scale: "log" },
     { key: "Rload", label: "負荷抵抗 Rload", unit: "Ω", default: 10, min: 1, max: 1e3, scale: "log" },
   ],

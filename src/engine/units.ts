@@ -19,7 +19,9 @@ export function parseSI(text: string): number | null {
   const base = Number(match[1]);
   if (!Number.isFinite(base)) return null;
   const exponent = match[2] ? PREFIX_EXPONENT[match[2]] : 0;
-  return base * 10 ** exponent;
+  // 10 ** -6 などの掛け算は、誤差が出る(10 * 1e-6 は 9.999999999999999e-6 になる)。
+  // 範囲の境目(例: 最小値 10µ)で「範囲外」と判定されないよう、有効数字 12 桁に丸める
+  return Number((base * 10 ** exponent).toPrecision(12));
 }
 
 /** 3 桁の有効数字で接頭辞つきにする。例: formatSI(0.0047, "F") → "4.7 mF" */

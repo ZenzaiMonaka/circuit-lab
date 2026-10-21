@@ -19,6 +19,15 @@ describe("parseSI", () => {
     expect(parseSI("50%")).toBe(50);
   });
 
+  it("掛け算の誤差で、境目の値がずれない(10u がちょうど 1e-5 になる)", () => {
+    expect(parseSI("10u")).toBe(1e-5);
+    expect(parseSI("4.7u")).toBe(4.7e-6);
+    expect(parseSI("100n")).toBe(1e-7);
+    expect(parseSI("22p")).toBe(22e-12);
+    expect(parseSI("0.1m")).toBe(1e-4);
+    expect(parseSI("1.5k")).toBe(1500);
+  });
+
   it("指数表記と符号を読み取る", () => {
     expect(parseSI("1e-6")).toBeCloseTo(1e-6, 15);
     expect(parseSI("-2.5")).toBe(-2.5);
