@@ -12,21 +12,22 @@ interface Props {
 
 /** 部品の本体(記号)の長さ。両端の残りは配線(リード線)で埋める */
 const BODY_LENGTH: Record<TwoTerminalPart["kind"], number> = {
-  R: 36, C: 10, L: 40, D: 24, SW: 34, VDC: 28, VAC: 28, VPULSE: 28,
+  R: 36, C: 10, L: 40, D: 24, SW: 34, VDC: 28, VAC: 28, VPULSE: 28, VM: 28,
 };
 
 /** 部品から名前・値の文字までの距離(部品の太さに合わせる) */
 const LABEL_OFFSET: Record<TwoTerminalPart["kind"], number> = {
-  R: 14, C: 20, L: 14, D: 18, SW: 20, VDC: 22, VAC: 22, VPULSE: 22,
+  R: 14, C: 20, L: 14, D: 18, SW: 20, VDC: 22, VAC: 22, VPULSE: 22, VM: 22,
 };
 
-const isSource = (kind: TwoTerminalPart["kind"]) => kind === "VDC" || kind === "VAC" || kind === "VPULSE";
+const isCircleSymbol = (kind: TwoTerminalPart["kind"]) =>
+  kind === "VDC" || kind === "VAC" || kind === "VPULSE" || kind === "VM";
 
 function line(x1: number, y1: number, x2: number, y2: number, key?: string | number): ReactNode {
   return <line key={key} x1={x1} y1={y1} x2={x2} y2={y2} />;
 }
 
-/** 電源の記号は、文字や + − を傾けずに描くため、画面の座標のまま描く */
+/** 電源・電圧計の記号は、文字や + − を傾けずに描くため、画面の座標のまま描く */
 function SourceSymbol({ part }: { part: TwoTerminalPart }) {
   const [x1, y1] = part.from;
   const [x2, y2] = part.to;
@@ -50,6 +51,9 @@ function SourceSymbol({ part }: { part: TwoTerminalPart }) {
         </>
       )}
       {part.kind === "VAC" && <path d={`M${cx - 8} ${cy} q4 -9 8 0 t8 0`} />}
+      {part.kind === "VM" && (
+        <text x={cx} y={cy + 4.5} textAnchor="middle" className="sch-fill sch-meter">V</text>
+      )}
       {part.kind === "VPULSE" && <path d={`M${cx - 9} ${cy + 5} h0 v-9 h6 v9 h6 v-9`} />}
     </g>
   );
@@ -89,7 +93,7 @@ function BodySymbol({ kind }: { kind: TwoTerminalPart["kind"] }) {
 }
 
 function TwoTerminal({ part }: { part: TwoTerminalPart }) {
-  if (isSource(part.kind)) return <SourceSymbol part={part} />;
+  if (isCircleSymbol(part.kind)) return <SourceSymbol part={part} />;
   const [x1, y1] = part.from;
   const [x2, y2] = part.to;
   const len = Math.hypot(x2 - x1, y2 - y1);

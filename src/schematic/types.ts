@@ -1,8 +1,8 @@
 export type Point = [number, number];
 
-/** 両端子の部品。from → to の向きに描く(電源は from が + 側、ダイオードは from がアノード) */
+/** 両端子の部品。from → to の向きに描く(電源は from が + 側、ダイオードは from がアノード。VM は電圧計) */
 export interface TwoTerminalPart {
-  kind: "R" | "C" | "L" | "VDC" | "VAC" | "VPULSE" | "D" | "SW";
+  kind: "R" | "C" | "L" | "VDC" | "VAC" | "VPULSE" | "VM" | "D" | "SW";
   from: Point;
   to: Point;
   name: string;

@@ -1,11 +1,14 @@
 // 内蔵の部品モデル。メーカーの型番モデルは使わず、典型的な値で作った汎用モデルにする
 // (再配布の権利関係を避けるため。docs/design.md 3 章)。
 
-export type ModelName = "DIODE" | "NPN" | "SWITCH" | "OPAMP";
+export type ModelName = "DIODE" | "LED" | "NPN" | "SWITCH" | "OPAMP";
 
 export const MODEL_LIBRARY: Record<ModelName, string> = {
   // 汎用の整流ダイオード(順方向電圧 約 0.7V)
   DIODE: ".model DGEN D(Is=1e-9 Rs=20m N=1.05 Cjo=10p)",
+
+  // 赤色 LED(10mA で順方向電圧 約 2V)
+  LED: ".model DLED D(Is=1e-20 N=1.8 Rs=5 Cjo=30p)",
 
   // 汎用の小信号 NPN トランジスタ(hFE 約 200)
   NPN: ".model QGEN NPN(Is=1e-14 Bf=200 Vaf=100 Rb=10 Cje=5p Cjc=3p Tf=0.4n)",
