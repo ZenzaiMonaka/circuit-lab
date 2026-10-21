@@ -1,7 +1,7 @@
 import type { CSSProperties, ReactNode } from "react";
 import { formatSI } from "../engine/units";
 import type { ParamDef, ParamValues } from "../templates/types";
-import type { OpampPart, NpnPart, Point, SchematicDef, TwoTerminalPart } from "./types";
+import type { OpampPart, TransistorPart, Point, SchematicDef, TwoTerminalPart } from "./types";
 
 interface Props {
   schematic: SchematicDef;
@@ -10,14 +10,17 @@ interface Props {
   title: string;
 }
 
+/** 図の上に出る部品名・値の文字が切れないよう、上に空ける余白 */
+const TOP_MARGIN = 14;
+
 /** 部品の本体(記号)の長さ。両端の残りは配線(リード線)で埋める */
 const BODY_LENGTH: Record<TwoTerminalPart["kind"], number> = {
-  R: 36, C: 10, L: 40, D: 24, SW: 34, VDC: 28, VAC: 28, VPULSE: 28, VM: 28,
+  R: 36, C: 10, L: 40, D: 24, ZD: 24, SW: 34, VDC: 28, VAC: 28, VPULSE: 28, VM: 28,
 };
 
 /** 部品から名前・値の文字までの距離(部品の太さに合わせる) */
 const LABEL_OFFSET: Record<TwoTerminalPart["kind"], number> = {
-  R: 14, C: 20, L: 14, D: 18, SW: 20, VDC: 22, VAC: 22, VPULSE: 22, VM: 22,
+  R: 14, C: 20, L: 14, D: 18, ZD: 18, SW: 20, VDC: 22, VAC: 22, VPULSE: 22, VM: 22,
 };
 
 const isCircleSymbol = (kind: TwoTerminalPart["kind"]) =>
@@ -79,6 +82,13 @@ function BodySymbol({ kind }: { kind: TwoTerminalPart["kind"] }) {
           {line(10, -10, 10, 10)}
         </>
       );
+    case "ZD":
+      return (
+        <>
+          <polygon points="-12,-10 -12,10 8,0" className="sch-fill" />
+          <path d="M6 -13 L10 -10 L10 10 L14 13" />
+        </>
+      );
     case "SW":
       return (
         <>
@@ -126,16 +136,53 @@ function PartLabel({ part, valueText }: { part: TwoTerminalPart; valueText: stri
   );
 }
 
-function Npn({ part }: { part: NpnPart }) {
-  const [x, y] = part.at;
+/** トランジスタの記号(ベース・ゲートが原点、上の端子が (40,-30)、下の端子が (40,30)) */
+function TransistorSymbol({ kind }: { kind: TransistorPart["kind"] }) {
+  if (kind === "NMOS") {
+    return (
+      <>
+        {line(0, 0, 12, 0)}
+        {line(12, -14, 12, 14)}
+        {line(18, -16, 18, -8)}
+        {line(18, -4, 18, 4)}
+        {line(18, 8, 18, 16)}
+        <polyline points="18,-12 40,-12 40,-30" />
+        <polyline points="18,12 40,12 40,30" />
+        <polyline points="18,0 40,0 40,12" />
+        <polygon points="18,0 26,-3 26,3" className="sch-fill" />
+      </>
+    );
+  }
   return (
-    <g transform={`translate(${x} ${y})`}>
+    <>
       {line(0, 0, 18, 0)}
       {line(18, -18, 18, 18)}
       {line(18, -9, 40, -30)}
       {line(18, 9, 40, 30)}
-      <polygon points="38,28 29.4,25.4 35,19.6" className="sch-fill" />
-      <text x={50} y={6} className="sch-text sch-name">{part.name}</text>
+      {/* 矢印はエミッタに付く。NPN は外向き(下の端子)、PNP は内向き(上の端子) */}
+      <polygon
+        points={kind === "NPN" ? "38,28 29.4,25.4 35,19.6" : "21.6,-12.5 30.2,-15.1 24.6,-20.9"}
+        className="sch-fill"
+      />
+    </>
+  );
+}
+
+function Transistor({ part }: { part: TransistorPart }) {
+  const [x, y] = part.at;
+  return (
+    <g>
+      <g transform={`translate(${x} ${y})${part.mirror ? " scale(-1 1)" : ""}`}>
+        <TransistorSymbol kind={part.kind} />
+      </g>
+      <text
+        x={part.mirror ? x - 50 : x + 50}
+        y={y + 6}
+        textAnchor={part.mirror ? "end" : "start"}
+        className="sch-text sch-name"
+      >
+        {part.name}
+      </text>
     </g>
   );
 }
@@ -167,7 +214,7 @@ export function Schematic({ schematic, params, values, title }: Props) {
   return (
     <svg
       className="schematic"
-      viewBox={`0 0 ${schematic.width} ${schematic.height}`}
+      viewBox={`0 ${-TOP_MARGIN} ${schematic.width} ${schematic.height + TOP_MARGIN}`}
       role="img"
       aria-label={`${title}の回路図`}
       // 横に長い回路図は縮小表示されるので、文字も図の幅に合わせて大きくする
@@ -191,7 +238,9 @@ export function Schematic({ schematic, params, values, title }: Props) {
               );
             }
             case "NPN":
-              return <Npn key={i} part={part} />;
+            case "PNP":
+            case "NMOS":
+              return <Transistor key={i} part={part} />;
             case "OPAMP":
               return <Opamp key={i} part={part} />;
             case "TEXT":

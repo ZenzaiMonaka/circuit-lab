@@ -55,6 +55,21 @@ function ParamRow({ param, value, error, onChange }: RowProps) {
 
   const message = draftError ?? error;
   const id = `param-${param.key}`;
+
+  if (param.scale === "switch") {
+    return (
+      <div className="param-row param-switch">
+        <label htmlFor={id}>{param.label}</label>
+        <input
+          id={id}
+          type="checkbox"
+          checked={value >= 0.5}
+          onChange={(e) => onChange(param.key, e.target.checked ? 1 : 0)}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="param-row">
       <label htmlFor={id}>{param.label}</label>

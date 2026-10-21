@@ -21,8 +21,11 @@ export interface ParamDef {
   default: number;
   min: number;
   max: number;
-  /** 桁が大きく変わる値(抵抗・容量など)は log にするとスライダーが使いやすい */
-  scale: "linear" | "log";
+  /**
+   * 桁が大きく変わる値(抵抗・容量など)は log にするとスライダーが使いやすい。
+   * switch は「あり/なし」の切り替え(値は 1 か 0。min=0, max=1 にする)
+   */
+  scale: "linear" | "log" | "switch";
 }
 
 export type ParamValues = Record<string, number>;

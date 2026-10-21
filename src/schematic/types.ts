@@ -2,7 +2,7 @@ export type Point = [number, number];
 
 /** 両端子の部品。from → to の向きに描く(電源は from が + 側、ダイオードは from がアノード。VM は電圧計) */
 export interface TwoTerminalPart {
-  kind: "R" | "C" | "L" | "VDC" | "VAC" | "VPULSE" | "VM" | "D" | "SW";
+  kind: "R" | "C" | "L" | "VDC" | "VAC" | "VPULSE" | "VM" | "D" | "ZD" | "SW";
   from: Point;
   to: Point;
   name: string;
@@ -13,13 +13,18 @@ export interface TwoTerminalPart {
 }
 
 export interface GroundPart { kind: "GND"; at: Point }
-/** NPN トランジスタ。at はベースの位置。コレクタは (+40,-30)、エミッタは (+40,+30) */
-export interface NpnPart { kind: "NPN"; at: Point; name: string }
+/**
+ * トランジスタ。at はベース(MOSFET はゲート)の位置。
+ * NPN・NMOS: 上の端子(コレクタ・ドレイン)が (+40,-30)、下の端子(エミッタ・ソース)が (+40,+30)。
+ * PNP: 上がエミッタ (+40,-30)、下がコレクタ (+40,+30)。
+ * mirror が true のときは左右を反転する(端子の x が -40 になる)
+ */
+export interface TransistorPart { kind: "NPN" | "PNP" | "NMOS"; at: Point; name: string; mirror?: boolean }
 /** オペアンプ。at は左端の中央。反転入力は (0,-20)、非反転入力は (0,+20)、出力は (+80,0) */
 export interface OpampPart { kind: "OPAMP"; at: Point; name: string; note?: string }
 export interface TextPart { kind: "TEXT"; at: Point; text: string; anchor?: "start" | "middle" | "end" }
 
-export type SchematicPart = TwoTerminalPart | GroundPart | NpnPart | OpampPart | TextPart;
+export type SchematicPart = TwoTerminalPart | GroundPart | TransistorPart | OpampPart | TextPart;
 
 export interface SchematicDef {
   width: number;

@@ -33,6 +33,19 @@ describe("全テンプレートの共通チェック", () => {
         }
       });
 
+      it("回路図の部品の端子が図の範囲内にある", () => {
+        const { width, height, parts } = template.schematic;
+        for (const part of parts) {
+          const points = "from" in part ? [part.from, part.to] : [part.at];
+          for (const [x, y] of points) {
+            expect(x).toBeGreaterThanOrEqual(0);
+            expect(x).toBeLessThanOrEqual(width);
+            expect(y).toBeGreaterThanOrEqual(0);
+            expect(y).toBeLessThanOrEqual(height);
+          }
+        }
+      });
+
       it("回路図が参照するパラメータが存在する", () => {
         const keys = new Set(template.params.map((p) => p.key));
         for (const part of template.schematic.parts) {

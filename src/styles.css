@@ -133,6 +133,7 @@ h1, h2, h3 { line-height: 1.3; }
 .param-input input[aria-invalid="true"] { border-color: var(--error); }
 .param-unit { width: 2em; color: var(--ink-soft); font-size: 0.85rem; }
 .param-row input[type="range"] { grid-column: 1 / -1; width: 100%; accent-color: var(--accent); }
+.param-switch input[type="checkbox"] { width: 1.3em; height: 1.3em; accent-color: var(--accent); justify-self: end; }
 .param-error { grid-column: 1 / -1; margin: 0; color: var(--error); font-size: 0.82rem; }
 
 .link-button {

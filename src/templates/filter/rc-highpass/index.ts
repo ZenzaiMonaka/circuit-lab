@@ -33,8 +33,8 @@ export const rcHighpass: Template = {
 C1 in out ${v.C1}
 R1 out 0 ${v.R1}`,
   schematic: {
-    width: 320,
-    height: 190,
+    width: 340,
+    height: 200,
     parts: [
       { kind: "VPULSE", from: [60, 40], to: [60, 140], name: "Vin", note: "1V 矩形波" },
       { kind: "C", from: [100, 40], to: [180, 40], name: "C1", param: "C1" },
